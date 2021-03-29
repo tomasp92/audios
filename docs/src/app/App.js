@@ -322,7 +322,7 @@ class App extends Component {
                             <div className="col s5">
                                 <video id="vid" controls muted="muted"></video>
                                 <audio id="vid2" controls style={{margin:'4px'}}></audio>
-                                <input type="file" name="audio"/>
+                                <input type="file" name="audio" style={{display:'none'}}/>
                                 
                             </div>
                         </div>
@@ -359,7 +359,7 @@ class App extends Component {
                                 {this.state.audios.map(audio=>{
                                     return (
                                         <tr key={audio._id}>
-                                            <td><a>{audio.titulo}</a></td>
+                                            <td>audio.titulo</td>
                                             <td></td>
                                             <td>{audio.fecha}</td>
                                             <td>
