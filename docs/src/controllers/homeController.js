@@ -8,16 +8,29 @@ const homeController={
         res.json(audios)
       },
 
+    filtro: async(req, res) =>{
+      const audios = await Audio.find({
+        title: /req.body.busqueda/i
+    }).exec(function(err, audios) {
+        if (err) throw err;
+         
+        console.log(audios);
+        
+    });
+    res.json(audios);
+    },
+
     audio: async(req, res) => {
         const audio = await Audio.findByIdAndUpdate(req.params.id);
         console.log("llego")
         res.json(audio)},
 
     nuevo_audio:    async(req, res) => {
+            return res.send(req.file);
             const { titulo } = req.body;
             const audio = new Audio({ titulo });
             console.log(audio);
-            await audio.save();
+            await audio.save(); 
             res.json({status: 'audio guardado'});
         },
 

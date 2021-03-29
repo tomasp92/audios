@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import Nav from './Nav';
 
-class App extends Component {
+class OneAudio extends Component {
     
     constructor(){
         super();
@@ -21,6 +21,7 @@ class App extends Component {
     }
     
     // al hacer click eso que escuche se manda a mi servidor
+
     addAudio(evento){
         if(this.state._id){
             //actualizar titulo si existe id
@@ -219,7 +220,7 @@ class App extends Component {
 
     }
 
-    obtenerAudios(){
+    obtenerunAudio(){
         fetch('/api/audios/')
             .then(res=> res.json())
             .then(data=> {
