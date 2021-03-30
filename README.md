@@ -6,6 +6,8 @@ Ademas se pueden eliminar o editar.
 
 Es importante tener en cuenta a la hora de ejecutar las dependencias del lado del desarrollador.
 Para ejecutar en el local host en la terminal se tipea npm run dev, y para hacerlo se necesitara descargar nodemon.
+ 
+ Aquíe dejo listadas las dependencias del desarrollador:
  "devDependencies": {
     "@babel/core": "^7.13.13",
     "@babel/plugin-proposal-class-properties": "^7.13.0",
