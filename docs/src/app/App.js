@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+// import TableBody from './TableBody';
 import Nav from './Nav';
 
 class App extends Component {
@@ -9,18 +9,16 @@ class App extends Component {
         this.state = {
             titulo: '',
             id: '',
-            audio: '',
-            busqueda: '',
-            audios: []
-            
+            audios: [],
+            audio: '', 
+            busqueda: ''        
         };
         this.handleChange = this.handleChange.bind(this);
         this.addAudio = this.addAudio.bind(this);
-        this.obtenerAudiosfiltrados = this.obtenerAudiosfiltrados.bind(this);
         
     }
     
-    // al hacer click eso que escuche se manda a mi servidor
+    
     addAudio(evento){
         if(this.state._id){
             //actualizar titulo si existe id
@@ -37,13 +35,35 @@ class App extends Component {
                 console.log(data)
                 //Mensaje al usuario en la pantalla
                 M.toast({html: `Audio editado`});
-                // Setear a vacio los datos del formulario
-                this.setState({titulo:'',_id:'',audio: ''});
-                this.obtenerAudios();
             })
             .catch(err=> console.log(err));
         }else{
             //agregar nuevo audio
+            
+            // const formData = new FormData();
+            // const fileField = document.querySelector('input[type="file"]');
+            // console.log('form data antes de ponerle imagen' + FormData);
+            // formData.append('avatar', fileField.files[0]);
+            // console.log('form data despues de ponerle imagen' + FormData);
+
+            // fetch('/api/audios', {
+            // method: 'POST',
+            // body: formData,
+            // headers: {
+            //     'Accept': 'application/json',
+            //     'Content-type': 'application/json'
+            // }
+            // })
+            // .then(response => response.json())
+            // .then(data => {
+            //     console.log(data)
+            //     M.toast({html: `Audio guardado`});
+            // })
+            // .catch(error => {
+            // console.error('Error:', error);
+            // });
+
+
             fetch('/api/audios',{
                 method: 'POST',
                 body: JSON.stringify(this.state),
@@ -56,12 +76,12 @@ class App extends Component {
             .then(data => {
                 console.log(data)
                 M.toast({html: `Audio guardado`});
-                this.setState({titulo:'',_id:''});
-                this.obtenerAudios();
             })
             .catch(err=> console.log(err));
         }
-        
+        // Setear a vacio los datos del formulario
+        this.setState({titulo:'',_id:'',audio: ''});
+        this.obtenerAudios();
         evento.preventDefault();    
     }
 
@@ -211,6 +231,7 @@ class App extends Component {
                 chunks = [];
                 let videoURL = window.URL.createObjectURL(blob);
                 vidSave.src = videoURL;
+                this.audio = videoURL;
             }
         })
         .catch(function(err) { 
@@ -228,9 +249,34 @@ class App extends Component {
                 console.log(this.state.audios);
             });
     }
+
+    editAudio(id){
+        fetch(`/api/audios/${id}`)
+            .then(res=> res.json())
+            .then(data =>{
+                console.log(data);
+                this.setState({
+                    titulo: data.titulo,
+                    _id: data._id
+                })
+                console.log("fin primera funcion");
+               
+            });
+        }
+    obtenerunAudio(id){
+        fetch(`/api/audios/${id}`)
+            .then(res=> res.json())
+            .then(data=> {
+                console.log(data);
+                this.setState({audios: data});
+                console.log(this.state.audios);
+            });
+    }
     
 
     obtenerAudiosfiltrados(evento){
+        console.log("query");
+        console.log(this.state.busqueda);
         fetch(`/api/audios/${this.state.busqueda}`)
             .then(res=> res.json())
             .then(data=> {
@@ -259,23 +305,7 @@ class App extends Component {
             });
         }
     }
-
-    editAudio(id){
     
-        fetch(`/api/audios/${id}`)
-            .then(res=> res.json())
-            .then(data =>{
-                console.log(data);
-                this.setState({
-                    titulo: data.titulo,
-                    _id: data._id
-                })
-               
-            });
-    }
-    
-
-
     // cuando el usuario tipea yo estoy escuchando lo que tipea
     handleChange(evento){
         const {name, value} = evento.target;
@@ -284,15 +314,13 @@ class App extends Component {
         })
     }
 
-    
-
     render(){
         return(
             <div>
                 {/* Navegación */}
                 <Nav/>
                 <div className="container">
-                    <form onSubmit={this.addAudio} method="POST" enctype="multipart/form-data" style={{"backgroundColor":"#F5C000"}}>
+                    <form onSubmit={this.addAudio}  style={{"backgroundColor":"#F5C000"}}>
                         <div className="row">
                             <div className="input-field" >
                                 <input style={{margin:'4px', "backgroundColor":"#BF0404"}} name= "titulo" onChange={this.handleChange} type="text" value={this.state.titulo} placeholder="Titulo del audio"/>
@@ -315,6 +343,7 @@ class App extends Component {
                                 <span id="minutos" style={{margin:'4px', "color":"#BF0404"}}>grabando audio</span>
                             </div>
                             <div className="col s1">
+                                {/* Para cancelar el audio */}
                                 <button id="btnCancel" style={{margin:'4px', "backgroundColor":"#BF0404"}} className="btn light-red darken-4">
                                     <i className="material-icons">clear</i>
                                 </button><br/>
@@ -322,7 +351,8 @@ class App extends Component {
                             <div className="col s5">
                                 <video id="vid" controls muted="muted"></video>
                                 <audio id="vid2" controls style={{margin:'4px'}}></audio>
-                                <input type="file" name="audio" style={{display:'none'}}/>
+                                {/* <input type="file" name="audio" /> */}
+                                {/* style={{display:'none'}} */}
                                 
                             </div>
                         </div>
@@ -355,11 +385,13 @@ class App extends Component {
                                     <th>Enviado</th>
                                 </tr>
                             </thead>
+                            {/* <TableBody audios={this.state.audios} obtenerunAudio= {this.obtenerunAudio} 
+                            editAudio = {this.editAudio} deleteAudio = {this.deleteAudio} /> */}
                             <tbody>
                                 {this.state.audios.map(audio=>{
                                     return (
                                         <tr key={audio._id}>
-                                            <td>audio.titulo</td>
+                                            <td><a href="#" onClick={()=>this.obtenerunAudio(audio._id)}>{audio.titulo}</a></td>
                                             <td></td>
                                             <td>{audio.fecha}</td>
                                             <td>
@@ -373,9 +405,11 @@ class App extends Component {
                                                 </button>
                                             </td>
                                         </tr>
-                                    )
-                                })}
+                                        )
+                                    })
+                                }
                             </tbody>
+
                         </table>
                     </div>
                 </div>
